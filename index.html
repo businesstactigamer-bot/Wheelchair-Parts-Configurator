@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Stride Specs — Mobile Wheelchair HCPCS Specifier</title>
+  
+  <!-- SEO & Social Meta -->
+  <meta name="description" content="Rapid mobile wheelchair specification and HCPCS code picker for clinical seating evaluations. Quick email export for ATPs and therapists.">
+  <meta name="application-name" content="Stride Specs">
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Stride Specs">
+  <meta name="theme-color" content="#090d16">
+  <meta name="mobile-web-app-capable" content="yes">
+  
+  <!-- Icons & Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-icon">♿</div>
+      <div>
+        <h1 class="brand-title">
+          Stride Specs
+          <span class="brand-badge">PWA</span>
+        </h1>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button id="btnHistory" class="icon-btn" title="Saved Evaluations" aria-label="Saved Evaluations">📁</button>
+      <button id="btnNewEval" class="icon-btn" title="New Patient / Reset" aria-label="New Patient">✨</button>
+      <button id="btnToggleTheme" class="icon-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">🌙</button>
+      <button id="btnSettings" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
+    </div>
+  </header>
+
+  <!-- Main Scrollable App Container -->
+  <main class="main-content">
+    
+    <!-- 1. Patient Info Card -->
+    <section class="card-section glow-active" id="patientSection">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span>👤 Patient &amp; Evaluation</span>
+        </h2>
+        <span id="savedIndicator" style="font-size: 0.72rem; color: var(--emerald-500); font-weight: 600;">● Auto-Saved</span>
+      </div>
+
+      <div class="patient-input-row">
+        <!-- Patient Name (Primary Focus) -->
+        <div class="input-field-wrapper" id="patientNameWrap">
+          <span class="input-icon">👤</span>
+          <input 
+            type="text" 
+            id="patientNameInput" 
+            class="input-text" 
+            placeholder="Enter Patient Full Name..." 
+            autocomplete="off" 
+            autocapitalize="words"
+            spellcheck="false"
+          >
+          <button type="button" id="btnClearPatient" class="input-clear-btn" aria-label="Clear Name">✕</button>
+        </div>
+
+        <!-- Sub Grid: Date & Email -->
+        <div class="sub-input-grid">
+          <div>
+            <label for="evalDateInput" class="sub-input-label">Date of Evaluation</label>
+            <input type="date" id="evalDateInput" class="input-compact">
+          </div>
+          <div>
+            <label for="evaluatorEmailInput" class="sub-input-label">My Email (Send Specs To)</label>
+            <input type="email" id="evaluatorEmailInput" class="input-compact" placeholder="therapist@example.com">
+          </div>
+        </div>
+
+        <!-- Optional Collapsible Notes -->
+        <details style="margin-top: 2px;">
+          <summary style="font-size: 0.75rem; color: var(--text-muted); cursor: pointer; font-weight: 600;">
+            + Add Diagnosis / Clinical Notes (Optional)
+          </summary>
+          <textarea id="evalNotesInput" class="custom-justification-input" placeholder="ICD-10, physical findings, or general order notes..."></textarea>
+        </details>
+      </div>
+    </section>
+
+    <!-- 2. Wheelchair Base Selection Card -->
+    <section class="card-section" id="chairBaseSection">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span>♿ Step 1: Select Wheelchair Base</span>
+        </h2>
+        <span id="modelCountBadge" style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">34 Models</span>
+      </div>
+
+      <!-- Category Segmented Control -->
+      <div class="category-segmented-control" role="tablist">
+        <button type="button" class="segment-btn" data-category="Manual Chair" role="tab" aria-selected="false">
+          <span class="seg-emoji">♿</span>
+          <span>Manual</span>
+        </button>
+        <button type="button" class="segment-btn" data-category="Tilt in Space Chair" role="tab" aria-selected="false">
+          <span class="seg-emoji">🦼</span>
+          <span>Tilt-in-Space</span>
+        </button>
+        <button type="button" class="segment-btn active" data-category="Power Chair" role="tab" aria-selected="true">
+          <span class="seg-emoji">⚡</span>
+          <span>Power</span>
+        </button>
+      </div>
+
+      <!-- Model Dropdown & Base HCPCS Code -->
+      <div class="chair-model-selector-wrap">
+        <label for="chairModelSelect" class="sub-input-label">Wheelchair Manufacturer &amp; Model</label>
+        <select id="chairModelSelect" class="select-model-dropdown" aria-label="Wheelchair Model"></select>
+
+        <!-- Base HCPCS Banner -->
+        <div class="base-hcpcs-banner">
+          <div class="base-hcpcs-info">
+            <span id="baseHcpcsCodeBadge" class="hcpcs-badge-pill">K0861</span>
+            <span id="baseHcpcsDesc" class="base-hcpcs-desc">Quantum Q6 Edge 4 TRU Balance 3 Multiple Power</span>
+          </div>
+          <label class="base-include-checkbox" title="Include Base Chair in Output Spec List">
+            <input type="checkbox" id="chkIncludeBase" checked>
+            <span>Include Base</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Specs & Part Picker Section -->
+    <section class="card-section" id="partsPickerSection">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span>🔧 Step 2: Pick Chair Parts &amp; Specs</span>
+        </h2>
+        <span id="tabCountInfo" style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;"></span>
+      </div>
+
+      <!-- Horizontal Tab Bar -->
+      <nav class="picker-tabs-row" id="pickerTabs" role="tablist">
+        <button type="button" class="picker-tab-btn active" data-tab="chair" role="tab" aria-selected="true">
+          <span>🔧 Chair Options</span>
+          <span class="tab-count" id="countChair">0</span>
+        </button>
+        <button type="button" class="picker-tab-btn" data-tab="cushions" role="tab" aria-selected="false">
+          <span>🪑 Cushions</span>
+          <span class="tab-count" id="countCushions">0</span>
+        </button>
+        <button type="button" class="picker-tab-btn" data-tab="backrests" role="tab" aria-selected="false">
+          <span>📐 Backrests</span>
+          <span class="tab-count" id="countBackrests">0</span>
+        </button>
+        <button type="button" class="picker-tab-btn" data-tab="accessories" role="tab" aria-selected="false">
+          <span>⚙️ Accessories</span>
+          <span class="tab-count" id="countAccessories">0</span>
+        </button>
+        <button type="button" class="picker-tab-btn" data-tab="selected" role="tab" aria-selected="false">
+          <span>⭐ Selected Only</span>
+          <span class="tab-count" id="countSelectedTab">0</span>
+        </button>
+      </nav>
+
+      <!-- Search & Quick Filters -->
+      <div class="picker-controls-row">
+        <div class="search-input-wrap" id="searchWrap">
+          <i>🔍</i>
+          <input 
+            type="text" 
+            id="partFilterInput" 
+            class="search-input" 
+            placeholder="Search specs, HCPCS (e.g. E1002, Tilt, Legrest)..." 
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button type="button" id="btnClearSearch" class="search-clear-btn" aria-label="Clear Search">✕</button>
+        </div>
+
+        <div class="quick-actions-bar">
+          <div class="filter-tags-scroll" id="filterTagsScroll">
+            <span class="filter-tag-chip active" data-tag="all">All</span>
+            <span class="filter-tag-chip" data-tag="tilt">Tilt / Recline</span>
+            <span class="filter-tag-chip" data-tag="legrest">Legrests / Foot</span>
+            <span class="filter-tag-chip" data-tag="headrest">Headrests</span>
+            <span class="filter-tag-chip" data-tag="armrest">Armrests</span>
+            <span class="filter-tag-chip" data-tag="positioning">Positioning</span>
+            <span class="filter-tag-chip" data-tag="power">Electronics</span>
+            <span class="filter-tag-chip" data-tag="tires">Wheels / Casters</span>
+          </div>
+
+          <div class="batch-btn-group">
+            <button type="button" id="btnSelectAllTab" class="action-pill-btn" title="Select All Visible in Tab">☑️ All</button>
+            <button type="button" id="btnClearTab" class="action-pill-btn" title="Clear Tab Selection">◻️ None</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parts List Items Container -->
+      <div id="partsListContainer" class="parts-list-container" role="list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sticky Floating Bottom Action Bar -->
+  <div class="floating-bottom-bar" id="floatingBottomBar">
+    <div class="bottom-bar-inner">
+      <div class="selection-summary">
+        <div class="selected-count-pill">
+          <span>✓</span>
+          <span id="bottomSelectedCount">0 parts selected</span>
+        </div>
+        <div class="selected-patient-hint" id="bottomPatientHint">
+          👤 No Patient Entered
+        </div>
+      </div>
+
+      <div class="bottom-action-buttons">
+        <button type="button" id="btnClearAll" class="btn-secondary-action" title="Clear All Selected Parts">
+          <span>Clear</span>
+        </button>
+        <button type="button" id="btnReviewExport" class="btn-primary-action">
+          <span>Review &amp; Email</span>
+          <span>✉️</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review & Email Modal -->
+  <div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="reviewModalTitle">
+          <span>✉️ Review &amp; Send Wheelchair Specs</span>
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="reviewModal" aria-label="Close Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Formatted Clinical Spec Sheet</span>
+          <span id="reviewPartCountPill" class="brand-badge">0 items</span>
+        </div>
+
+        <!-- Formatted Preview Box -->
+        <pre id="reviewFormattedText" class="review-preview-box"></pre>
+
+        <!-- Email Recipient Input (In-Modal Edit) -->
+        <div>
+          <label for="reviewEmailRecipient" class="sub-input-label">Send Email To:</label>
+          <input type="email" id="reviewEmailRecipient" class="input-compact" placeholder="therapist@example.com">
+        </div>
+
+        <!-- Email & Export Actions Grid -->
+        <div class="email-actions-grid">
+          <button type="button" id="btnSendMailto" class="email-btn btn-mail">
+            <span>✉️ Open in Email App</span>
+          </button>
+          <button type="button" id="btnCopySpecs" class="email-btn btn-copy">
+            <span>📋 Copy Specs</span>
+          </button>
+          <button type="button" id="btnShareNative" class="email-btn btn-share">
+            <span>📤 Share Via...</span>
+          </button>
+          <button type="button" id="btnPrintPdf" class="email-btn btn-copy" style="grid-column: span 2;">
+            <span>🖨️ Print / Save as PDF</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Justification Selection Modal -->
+  <div class="modal-overlay" id="justificationModal" role="dialog" aria-modal="true" aria-labelledby="justificationModalTitle">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="justificationModalTitle">
+          <span>💡 Select Clinical Justification</span>
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="justificationModal" aria-label="Close Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          <span id="justificationItemName" style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); display: block;"></span>
+          <span id="justificationItemCode" style="font-size: 0.78rem; font-weight: 600; color: var(--text-accent); font-family: var(--font-mono);"></span>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-muted);">
+          Choose a clinical medical justification bullet to include in the order form &amp; evaluation documentation:
+        </div>
+
+        <div id="justificationOptionsList" class="justification-option-list">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div>
+          <label for="customJustificationText" class="sub-input-label">Or Custom Therapist Rationale:</label>
+          <textarea id="customJustificationText" class="custom-justification-input" placeholder="Type custom clinical rationale for this specific patient..."></textarea>
+        </div>
+
+        <button type="button" id="btnSaveJustification" class="btn-primary-action" style="justify-content: center; width: 100%; border-radius: var(--radius-md);">
+          <span>Apply Justification</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Evaluations History Modal -->
+  <div class="modal-overlay" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="historyModalTitle">
+          <span>📁 Saved Evaluations History</span>
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="historyModal" aria-label="Close Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="font-size: 0.8rem; color: var(--text-muted);">
+          Evaluations are automatically saved locally on this device. You can reload any prior patient specs or clear history.
+        </div>
+
+        <div id="historyListContainer" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Populated dynamically -->
+        </div>
+
+        <button type="button" id="btnClearHistory" class="action-pill-btn" style="color: var(--rose-500); align-self: flex-start; margin-top: 10px;">
+          🗑️ Clear All Saved History
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal-sheet">
+      <div class="modal-handle-bar"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="settingsModalTitle">
+          <span>⚙️ App Settings</span>
+        </h3>
+        <button type="button" class="modal-close-btn" data-close-modal="settingsModal" aria-label="Close Modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div>
+          <label for="settingDefaultEmail" class="sub-input-label">Default ATP / Therapist Email Address</label>
+          <input type="email" id="settingDefaultEmail" class="input-compact" placeholder="therapist@clinic.com">
+          <small style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 3px;">
+            This email will be automatically prefilled whenever you open the app.
+          </small>
+        </div>
+
+        <div>
+          <label for="settingClinicName" class="sub-input-label">Facility / Clinic Name (Optional)</label>
+          <input type="text" id="settingClinicName" class="input-compact" placeholder="Stride Mobility / Clinic">
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 6px;">
+          <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-primary);">Auto-Include Base Wheelchair</span>
+          <input type="checkbox" id="settingAutoBase" checked style="width: 18px; height: 18px; accent-color: var(--emerald-500);">
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 6px;">
+          <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-primary);">Pre-Select First Justification Rationale</span>
+          <input type="checkbox" id="settingAutoJustification" checked style="width: 18px; height: 18px; accent-color: var(--emerald-500);">
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 8px;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">
+            <strong>Stride Specs Mobile PWA v1.0</strong><br>
+            Offline-enabled Progressive Web App.<br>
+            Ready for GitHub Pages &amp; Mobile Home Screen installation.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Application Logic -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

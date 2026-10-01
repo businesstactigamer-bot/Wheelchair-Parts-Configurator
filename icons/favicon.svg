@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <rect x="2" y="2" width="508" height="508" rx="110" stroke="#10b981" stroke-opacity="0.3" stroke-width="4"/>
+  <!-- Person / Wheelchair -->
+  <circle cx="236" cy="146" r="28" fill="#f0fdfa"/>
+  <path d="M236 176 L226 266 L316 271 L321 351" stroke="#f0fdfa" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M301 351 L346 351" stroke="#10b981" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="231" cy="301" r="95" stroke="#10b981" stroke-width="20" fill="none"/>
+  <circle cx="231" cy="301" r="14" fill="#34d399"/>
+  <circle cx="326" cy="376" r="22" fill="#34d399"/>
+  <circle cx="326" cy="376" r="10" fill="#0f172a"/>
+  <!-- Lightning bolt badge -->
+  <polygon points="351,136 311,206 341,206 326,266 381,216 351,216" fill="#f59e0b"/>
+</svg>
